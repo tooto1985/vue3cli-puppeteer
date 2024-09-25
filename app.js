@@ -1,3 +1,4 @@
+import { argv } from 'node:process';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import puppeteer from 'puppeteer';
@@ -6,7 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // =====[Settings]=====
-
 const SEARCH_BOT = [
     'googlebot', // Google
     'bingbot', // Bing
@@ -27,11 +27,10 @@ const SEARCH_BOT = [
     'bot' // Other bot keyword
 ];
 const PORT = 7777;
-const DOMAIN = 'http://localhost:7777'
+const DOMAIN = argv[2] || 'http://localhost:7777'
 const CACHE_TTL = 1000; // 快取 TTL 設定 (60 秒)
 const FOLDER = 'dist';
 const INDEX = 'index.html'
-
 // ====================
 
 
