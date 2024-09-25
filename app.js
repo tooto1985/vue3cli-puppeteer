@@ -60,7 +60,7 @@ async function ua(req, res, next) {
             // 啟動 Puppeteer 並渲染頁面
             browser = await puppeteer.launch({
                 headless: true, // 使用無頭模式
-                args: ['--no-sandbox', '--disable-setuid-sandbox'] // 避免權限問題
+                args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // 避免權限問題
             });
             const page = await browser.newPage();
 
