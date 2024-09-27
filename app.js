@@ -45,7 +45,7 @@ function isSearchBot(req) {
 
 // 啟動 Puppeteer
 const browser = await puppeteer.launch({
-    headless: false, // 使用無頭模式
+    headless: true, // 使用無頭模式
     defaultViewport: { width: 1920, height: 1080 },
     args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // 避免權限問題
 });
