@@ -43,6 +43,13 @@ function isSearchBot(req) {
     return SEARCH_BOT.some(bot => userAgent.includes(bot));
 }
 
+// 啟動 Puppeteer
+const browser = await puppeteer.launch({
+    headless: false, // 使用無頭模式
+    defaultViewport: { width: 1920, height: 1080 },
+    args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // 避免權限問題
+});
+
 // 中間件：檢測 User-Agent 並使用 Puppeteer 渲染頁面
 async function ua(req, res, next) {
     if (req.headers.accept.includes('text/html') && isSearchBot(req)) {
@@ -54,14 +61,10 @@ async function ua(req, res, next) {
             return res.end(pageCache.get(cacheKey).htmlContent);
         }
 
-        let browser = null;
+        let page = null;
         try {
-            // 啟動 Puppeteer 並渲染頁面
-            browser = await puppeteer.launch({
-                headless: true, // 使用無頭模式
-                args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] // 避免權限問題
-            });
-            const page = await browser.newPage();
+            // 渲染頁面
+            page = await browser.newPage();
 
             // 自動處理對話框（如 alert, confirm 等）
             page.on('dialog', async dialog => {
@@ -85,8 +88,8 @@ async function ua(req, res, next) {
             console.error(`Error rendering ${req.url}:`, err);
             res.status(500).send('Error rendering page');
         } finally {
-            if (browser) {
-                await browser.close(); // 確保瀏覽器被關閉
+            if (page) {
+                await page.close();
             }
         }
     } else {
